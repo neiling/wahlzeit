@@ -1,7 +1,12 @@
 package org.wahlzeit.model;
 
 import java.util.Objects;
-
+/**
+ * A Location to a photo.
+ * The class is immutable, otherwise it would be possible to change data without
+ * saving it to the database. Alternatively it would be possible to extend the
+ * class with DataObject. Read the report for more information.
+ */
 public class Location {
 
     private final Coordinate coordinate;
@@ -29,10 +34,12 @@ public class Location {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return Objects.equals(getCoordinate(), location.getCoordinate());
+        if (!(o instanceof Location))
+          return false;
+        if (this == o)
+          return true;
+        Location that = (Location) o;
+        return this.coordinate.isEqual(that.getCoordinate());
     }
 
 }

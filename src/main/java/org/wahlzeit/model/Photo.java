@@ -137,7 +137,7 @@ public class Photo extends DataObject {
 
 		ownerId = rset.getInt("owner_id");
 		ownerName = rset.getString("owner_name");
-		
+
 		ownerNotifyAboutPraise = rset.getBoolean("owner_notify_about_praise");
 		ownerEmailAddress = EmailAddress.getFromString(rset.getString("owner_email_address"));
 		ownerLanguage = Language.getFromInt(rset.getInt("owner_language"));
@@ -155,8 +155,13 @@ public class Photo extends DataObject {
 		creationTime = rset.getLong("creation_time");
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
+		location = new Location(
+				rset.getDouble("coordinate_x"),
+				rset.getDouble("coordinate_y"),
+				rset.getDouble("coordinate_z")
+		);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -174,7 +179,12 @@ public class Photo extends DataObject {
 		rset.updateInt("status", status.asInt());
 		rset.updateInt("praise_sum", praiseSum);
 		rset.updateInt("no_votes", noVotes);
-		rset.updateLong("creation_time", creationTime);		
+		rset.updateLong("creation_time", creationTime);
+    if (location != null) {
+		    rset.updateDouble("coordinate_x", location.getCoordinate().getX());
+		    rset.updateDouble("coordinate_y", location.getCoordinate().getY());
+		    rset.updateDouble("coordinate_z", location.getCoordinate().getZ());
+    }
 	}
 
 	/**
@@ -483,5 +493,6 @@ public class Photo extends DataObject {
 	 */
 	public void setLocation(final Location location) {
 		this.location = location;
+		incWriteCount();
 	}
 }
