@@ -2,6 +2,7 @@ plugins {
     id 'war'
     id 'org.gretty' version '3.0.3'  
     id 'java'
+    id 'info.solidsoft.pitest' version '1.7.0'
 }
 
 repositories {
@@ -21,13 +22,15 @@ sourceSets {
 }
 
 dependencies {
-    providedCompile 'javax.servlet:javax.servlet-api:4.0.1' 
-    
-    implementation 'org.postgresql:postgresql:9.3-1104-jdbc41'    
+    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+
+    implementation 'org.postgresql:postgresql:9.3-1104-jdbc41'
     implementation 'log4j:log4j:1.2.17'
     implementation 'com.sun.mail:javax.mail:1.6.2'
     
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:4.0.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0'
 }
 
 test {
@@ -46,3 +49,11 @@ test {
             }
         }
 }
+
+pitest {
+    targetClasses = ['org.wahlzeit.*']
+    threads = 8
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+}
+
