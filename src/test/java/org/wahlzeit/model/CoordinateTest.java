@@ -1,10 +1,23 @@
 package org.wahlzeit.model;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CoordinateTest {
+
+    @Mock
+    private ResultSet rset;
 
     @Test
     public void testGetDistanceDiffCoor() {
@@ -70,6 +83,57 @@ public class CoordinateTest {
     public void testGetZ() {
         final Coordinate coordinate = new Coordinate(0.1, 1.1, 2.1);
         assertEquals(2.1, coordinate.getZ(), 0.0);
+    }
+
+    @Test
+    public void testReadFrom() throws SQLException {
+        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.3);
+        final Coordinate coordinate = new Coordinate(rset);
+        assertEquals(coordinate, new Coordinate(1.1, 1.2, 1.3));
+    }
+
+    @Test
+    public void testReadFromTwice() throws SQLException {
+        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.3);
+        final Coordinate coordinate = new Coordinate(rset);
+        assertFalse(coordinate.isDirty());
+        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.4);
+        coordinate.readFrom(rset);
+        assertEquals(coordinate, new Coordinate(1.1, 1.2, 1.4));
+        assertTrue(coordinate.isDirty());
+    }
+
+    @Test
+    public void testWriteOn() throws SQLException {
+        final Coordinate coordinate = new Coordinate(1.1, 1.2, 1.3);
+        coordinate.writeOn(rset);
+        verify(rset, times(1)).updateDouble(eq("coordinate_x"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_y"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_z"), anyDouble());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetIdAsString() {
+        final Coordinate coordinate = new Coordinate(1.1, 1.2, 1.3);
+        coordinate.getIdAsString();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testWriteId() {
+        final Coordinate coordinate = new Coordinate(1.1, 1.2, 1.3);
+        coordinate.writeId(null, 0);
+    }
+
+    @Test
+    public void testHashCode() {
+        final Coordinate coordinate = new Coordinate(1.1, 1.2, 1.3);
+        assertEquals(719355811, coordinate.hashCode());
     }
 
 }
