@@ -33,9 +33,10 @@ public class PhotoManager extends ObjectManager {
 	protected PhotoTagCollector photoTagCollector = null;
 	
 	/**
-	 * 
+	 * Remove the final statement, otherwise it would be not possible to
+	 * instantiate classes which inherit from this class.
 	 */
-	public static final PhotoManager getInstance() {
+	public static PhotoManager getInstance() {
 		return instance;
 	}
 	
