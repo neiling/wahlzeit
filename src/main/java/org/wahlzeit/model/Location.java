@@ -28,14 +28,14 @@ public class Location extends DataObject {
      * @methodtype constructor
      */
     public Location(final double x, final double y, final double z) {
-        this.coordinate = new Coordinate(x, y, z);
+        this.coordinate = new CartesianCoordinate(x, y, z);
     }
 
     /**
      * @methodtype constructor
      */
     public Location(final ResultSet rset) throws SQLException {
-        this.coordinate = new Coordinate(rset);
+        this.coordinate = new CartesianCoordinate(rset);
     }
 
     /**

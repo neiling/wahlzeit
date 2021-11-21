@@ -33,6 +33,9 @@ CREATE TABLE photos (
 	coordinate_x double precision,
 	coordinate_y double precision,
 	coordinate_z double precision,
+    coordinate_phi double precision,
+    coordinate_theta double precision,
+    coordinate_radius double precision,
 	bird_species text
 );
 
