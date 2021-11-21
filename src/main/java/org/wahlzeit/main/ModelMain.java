@@ -31,7 +31,8 @@ public abstract class ModelMain extends AbstractMain {
 		
  		loadGlobals();
 
-		PhotoFactory.initialize();
+		BirdPhotoManager.initialize();
+		BirdPhotoFactory.initialize();
 	}
 	
 	/**

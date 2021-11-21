@@ -7,10 +7,7 @@ import java.sql.SQLException;
 
 public class BirdPhotoFactory extends PhotoFactory {
 
-    /**
-     * Hidden singleton instance; needs to be initialized from the outside.
-     */
-    private static BirdPhotoFactory instance = null;
+    private static boolean isInitialized = false;
 
     /**
      *
@@ -23,23 +20,20 @@ public class BirdPhotoFactory extends PhotoFactory {
      * Public singleton access method.
      */
     public static synchronized BirdPhotoFactory getInstance() {
-        if (instance == null) {
+        if (!isInitialized) {
             SysLog.logSysInfo("setting BirdPhotoFactory");
-            setInstance(new BirdPhotoFactory());
+            PhotoFactory.setInstance(new BirdPhotoFactory());
+            isInitialized = true;
         }
 
-        return instance;
+        return (BirdPhotoFactory) PhotoFactory.getInstance();
     }
 
     /**
-     * Method to set the singleton instance of PhotoFactory.
+     * Hidden singleton instance; needs to be initialized from the outside.
      */
-    protected static synchronized void setInstance(BirdPhotoFactory photoFactory) {
-        if (instance != null) {
-            throw new IllegalStateException("attempt to initialize BirdPhotoFactory twice");
-        }
-
-        instance = photoFactory;
+    public static void initialize() {
+        getInstance(); // drops result due to getInstance() side-effects
     }
 
     /**

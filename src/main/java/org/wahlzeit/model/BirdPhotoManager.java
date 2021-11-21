@@ -1,15 +1,14 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.services.SysLog;
+
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BirdPhotoManager extends PhotoManager {
 
-    /**
-     *
-     */
-    protected static final BirdPhotoManager instance = new BirdPhotoManager();
+    private static boolean isInitialized = false;
 
     /**
      *
@@ -19,10 +18,23 @@ public class BirdPhotoManager extends PhotoManager {
     }
 
     /**
-     *
+     * Public singleton access method.
      */
-    public static BirdPhotoManager getInstance() {
-        return instance;
+    public static synchronized BirdPhotoManager getInstance() {
+        if (!isInitialized) {
+            SysLog.logSysInfo("setting BirdPhotoFactory");
+            PhotoManager.setInstance(new BirdPhotoManager());
+            isInitialized = true;
+        }
+
+        return (BirdPhotoManager) PhotoManager.getInstance();
+    }
+
+    /**
+     * Hidden singleton instance; needs to be initialized from the outside.
+     */
+    public static void initialize() {
+        getInstance(); // drops result due to getInstance() side-effects
     }
 
     /**
