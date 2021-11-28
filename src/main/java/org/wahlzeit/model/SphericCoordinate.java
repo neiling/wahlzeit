@@ -111,7 +111,7 @@ public class SphericCoordinate extends DataObject implements Coordinate {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPhi(), getTheta(), getRadius());
+        return asCartesianCoordinate().hashCode();
     }
 
     public Double getPhi() {

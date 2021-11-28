@@ -90,7 +90,7 @@ public class SphericCoordinateTest {
     @Test
     public void testHashCode() {
         final SphericCoordinate coordinate = new SphericCoordinate(0.9, 0.8, 10.0);
-        assertEquals(315914365, coordinate.hashCode());
+        assertEquals(790743874, coordinate.hashCode());
     }
 
     @Test
@@ -111,6 +111,13 @@ public class SphericCoordinateTest {
     public void testEqualsNullObj() {
         final SphericCoordinate sphericCoordinate = new SphericCoordinate(0.8288490587889791, 0.8969196083497735, 2.083266665599966);
         assertFalse(sphericCoordinate.equals(null));
+    }
+
+    @Test
+    public void testEqualsSameCoors() {
+        final SphericCoordinate sphericCoordinate0 = new SphericCoordinate(0.8288490587889791, 0.8969196083497735, 2.083266665599966);
+        final SphericCoordinate sphericCoordinate1 = new SphericCoordinate(0.8288490587889791, 0.8969196083497735, 2.083266665599966);
+        assertTrue(sphericCoordinate0.equals(sphericCoordinate1));
     }
 
 }

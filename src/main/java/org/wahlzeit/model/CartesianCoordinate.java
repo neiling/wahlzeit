@@ -105,8 +105,9 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
     public SphericCoordinate asSphericCoordinate() {
         final CartesianCoordinate origin = new CartesianCoordinate(0.0,0.0,0.0);
         final double radius = origin.getDistance(this);
-        if (radius == 0)
+        if (radius == 0) {
             return new SphericCoordinate(0.0, 0.0, 0.0);
+        }
         final double phi = Math.atan2(y, x);
         final double theta = Math.acos(z/radius);
         return new SphericCoordinate(phi, theta, radius);
@@ -119,10 +120,12 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
 
     @Override
     public boolean isEqual(final Coordinate otherCoordinate) {
-        if (otherCoordinate == null)
+        if (otherCoordinate == null) {
             return false;
-        if (otherCoordinate == this)
+        }
+        if (otherCoordinate == this) {
             return true;
+        }
         final CartesianCoordinate otherCartCoor = otherCoordinate.asCartesianCoordinate();
         return isDoubleEqual(otherCartCoor.getX(), x)&&
                 isDoubleEqual(otherCartCoor.getY(), y) &&
