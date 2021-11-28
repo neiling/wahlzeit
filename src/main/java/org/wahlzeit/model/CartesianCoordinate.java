@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Cartesian coordinates to a location.
  */
-public class CartesianCoordinate extends DataObject implements Coordinate {
+public class CartesianCoordinate extends AbstractCoordinate {
 
     private final static double EPSILON = 1e-6; // 0.00001d
 
@@ -51,16 +51,6 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
     }
 
     @Override
-    public String getIdAsString() {
-        throw new UnsupportedOperationException("CartesainCoordinate has no Id.");
-    }
-
-    @Override
-    public void writeId(final PreparedStatement stmt, final int pos) {
-        throw new UnsupportedOperationException("CartesainCoordinate has no Id.");
-    }
-
-    @Override
     public void readFrom(final ResultSet rset) throws SQLException {
         if (isCoorInit()) {
             incWriteCount();
@@ -82,11 +72,6 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        return o instanceof CartesianCoordinate && isEqual((CartesianCoordinate) o);
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(getX(), getY(), getZ());
     }
@@ -98,7 +83,7 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
 
     @Override
     public double getCartesianDistance(final Coordinate otherCoordinate) {
-        return this.getDistance(otherCoordinate.asCartesianCoordinate());
+        return getDistance(otherCoordinate.asCartesianCoordinate());
     }
 
     @Override
@@ -111,11 +96,6 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
         final double phi = Math.atan2(y, x);
         final double theta = Math.acos(z/radius);
         return new SphericCoordinate(phi, theta, radius);
-    }
-
-    @Override
-    public double getCentralAngle(final Coordinate otherCoordinate) {
-        return this.asSphericCoordinate().getCentralAngle(otherCoordinate);
     }
 
     @Override

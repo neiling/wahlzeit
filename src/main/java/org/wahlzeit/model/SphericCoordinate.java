@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Spheric coordinates to a location.
  */
-public class SphericCoordinate extends DataObject implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
 
     private Double phi;
     private Double theta;
@@ -48,28 +48,11 @@ public class SphericCoordinate extends DataObject implements Coordinate {
     }
 
     @Override
-    public String getIdAsString() {
-        throw new UnsupportedOperationException("SphericCoordinate has no Id.");
-    }
-
-    @Override
-    public void writeId(final PreparedStatement stmt, final int pos) {
-        throw new UnsupportedOperationException("SphericCoordinate has no Id.");
-    }
-
-    @Override
     public CartesianCoordinate asCartesianCoordinate() {
         final double x = radius * Math.sin(theta) * Math.cos(phi);
         final double y = radius * Math.sin(theta) * Math.sin(phi);
         final double z = radius * Math.cos(theta);
         return new CartesianCoordinate(x, y, z);
-    }
-
-    @Override
-    public double getCartesianDistance(final Coordinate otherCoordinate) {
-        final CartesianCoordinate cca = this.asCartesianCoordinate();
-        final CartesianCoordinate ccb = otherCoordinate.asCartesianCoordinate();
-        return cca.getDistance(ccb);
     }
 
     @Override
@@ -97,21 +80,6 @@ public class SphericCoordinate extends DataObject implements Coordinate {
         final double denominator = sinPhiSinPhi + cosPhiCosPhiCosDelta;
 
         return Math.atan(numerator / denominator);
-    }
-
-    @Override
-    public boolean isEqual(final Coordinate otherCoordinate) {
-        return this.asCartesianCoordinate().isEqual(otherCoordinate.asCartesianCoordinate());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof SphericCoordinate && isEqual((SphericCoordinate) o);
-    }
-
-    @Override
-    public int hashCode() {
-        return asCartesianCoordinate().hashCode();
     }
 
     public Double getPhi() {
