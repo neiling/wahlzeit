@@ -1,11 +1,7 @@
 package org.wahlzeit.model;
 
-import org.wahlzeit.services.DataObject;
-
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 /**
  * Spheric coordinates to a location.
@@ -20,14 +16,18 @@ public class SphericCoordinate extends AbstractCoordinate {
         this.phi = phi;
         this.theta = theta;
         this.radius = radius;
+        assertClassInvariants();
     }
 
     public SphericCoordinate(final ResultSet rset) throws SQLException {
+        this.phi = 0.0;
+        this.theta = 0.0;
+        this.radius = 0.0;
         readFrom(rset);
     }
 
     @Override
-    public void readFrom(final ResultSet rset) throws SQLException {
+    protected void doReadFrom(final ResultSet rset) throws SQLException {
         if (isCoorInit()) {
             incWriteCount();
         }
@@ -37,18 +37,18 @@ public class SphericCoordinate extends AbstractCoordinate {
     }
 
     private boolean isCoorInit() {
-        return !(phi == null && theta == null && radius == null);
+        return !(phi == 0.0 && theta == 0.0 && radius == 0.0);
     }
 
     @Override
-    public void writeOn(final ResultSet rset) throws SQLException {
+    protected void doWriteOn(final ResultSet rset) throws SQLException {
         rset.updateDouble("coordinate_phi", phi);
         rset.updateDouble("coordinate_theta", theta);
         rset.updateDouble("coordinate_radius", radius);
     }
 
     @Override
-    public CartesianCoordinate asCartesianCoordinate() {
+    protected CartesianCoordinate getAsCartesianCoordinate() {
         final double x = radius * Math.sin(theta) * Math.cos(phi);
         final double y = radius * Math.sin(theta) * Math.sin(phi);
         final double z = radius * Math.cos(theta);
@@ -56,12 +56,12 @@ public class SphericCoordinate extends AbstractCoordinate {
     }
 
     @Override
-    public SphericCoordinate asSphericCoordinate() {
+    protected SphericCoordinate getAsSphericCoordinate() {
         return this;
     }
 
     @Override
-    public double getCentralAngle(final Coordinate otherCoordinate) {
+    protected double doGetCentralAngle(final Coordinate otherCoordinate) {
         final SphericCoordinate otherSpCoor = otherCoordinate.asSphericCoordinate();
 
         final double bigPhi1 = Math.toRadians(90) - theta;
@@ -80,6 +80,17 @@ public class SphericCoordinate extends AbstractCoordinate {
         final double denominator = sinPhiSinPhi + cosPhiCosPhiCosDelta;
 
         return Math.atan(numerator / denominator);
+    }
+
+    @Override
+    protected void assertClassInvariants() {
+        assertIsANumber(phi);
+        assertIsANumber(theta);
+        assertIsANumber(radius);
+        assertNotInfinite(phi);
+        assertNotInfinite(theta);
+        assertNotInfinite(radius);
+        assertNonNegative(radius);
     }
 
     public Double getPhi() {

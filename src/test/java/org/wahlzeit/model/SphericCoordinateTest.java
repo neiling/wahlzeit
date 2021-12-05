@@ -120,4 +120,39 @@ public class SphericCoordinateTest {
         assertTrue(sphericCoordinate0.equals(sphericCoordinate1));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorPhiAsNaN() {
+        new SphericCoordinate(Double.NaN, 1.0, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorThetaAsNaN() {
+        new SphericCoordinate(1.0, Double.NaN, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorRadiusAsNaN() {
+        new SphericCoordinate(1.0, 1.0, Double.NaN);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorPhiAsInf() {
+        new SphericCoordinate(Double.POSITIVE_INFINITY, 1.0, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorThetaAsInf() {
+        new SphericCoordinate(1.0, Double.POSITIVE_INFINITY, 1.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorRadiusAsInf() {
+        new SphericCoordinate(1.0, 1.0, Double.POSITIVE_INFINITY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorNegativeRadiusArgs() {
+        new SphericCoordinate(1.0, 1.0, -1.0);
+    }
+
 }

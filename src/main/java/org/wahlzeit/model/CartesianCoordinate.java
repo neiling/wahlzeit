@@ -1,8 +1,5 @@
 package org.wahlzeit.model;
 
-import org.wahlzeit.services.DataObject;
-
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -25,12 +22,16 @@ public class CartesianCoordinate extends AbstractCoordinate {
         this.x = x;
         this.y = y;
         this.z = z;
+        assertClassInvariants();
     }
 
     /**
      * @methodtype constructor
      */
     CartesianCoordinate(final ResultSet rset) throws SQLException {
+        this.x = 0.0;
+        this.y = 0.0;
+        this.z = 0.0;
         readFrom(rset);
     }
 
@@ -51,7 +52,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
     }
 
     @Override
-    public void readFrom(final ResultSet rset) throws SQLException {
+    protected void doReadFrom(final ResultSet rset) throws SQLException {
         if (isCoorInit()) {
             incWriteCount();
         }
@@ -61,33 +62,33 @@ public class CartesianCoordinate extends AbstractCoordinate {
     }
 
     private boolean isCoorInit() {
-        return !(x == null && y == null && z == null);
+        return !(x == 0.0 && y == 0.0 && z == 0.0);
     }
 
     @Override
-    public void writeOn(final ResultSet rset) throws SQLException {
+    protected void doWriteOn(final ResultSet rset) throws SQLException {
         rset.updateDouble("coordinate_x", x);
         rset.updateDouble("coordinate_y", y);
         rset.updateDouble("coordinate_z", z);
     }
 
     @Override
-    public int hashCode() {
+    protected int getHashCode() {
         return Objects.hash(getX(), getY(), getZ());
     }
 
     @Override
-    public CartesianCoordinate asCartesianCoordinate() {
+    protected CartesianCoordinate getAsCartesianCoordinate() {
         return this;
     }
 
     @Override
-    public double getCartesianDistance(final Coordinate otherCoordinate) {
+    protected double doGetCartesianDistance(final Coordinate otherCoordinate) {
         return getDistance(otherCoordinate.asCartesianCoordinate());
     }
 
     @Override
-    public SphericCoordinate asSphericCoordinate() {
+    protected SphericCoordinate getAsSphericCoordinate() {
         final CartesianCoordinate origin = new CartesianCoordinate(0.0,0.0,0.0);
         final double radius = origin.getDistance(this);
         if (radius == 0) {
@@ -99,7 +100,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
     }
 
     @Override
-    public boolean isEqual(final Coordinate otherCoordinate) {
+    public boolean getIsEqual(final Coordinate otherCoordinate) {
         if (otherCoordinate == null) {
             return false;
         }
@@ -110,6 +111,16 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return isDoubleEqual(otherCartCoor.getX(), x)&&
                 isDoubleEqual(otherCartCoor.getY(), y) &&
                 isDoubleEqual(otherCartCoor.getZ(), z);
+    }
+
+    @Override
+    protected void assertClassInvariants() {
+        assertIsANumber(x);
+        assertIsANumber(y);
+        assertIsANumber(z);
+        assertNotInfinite(x);
+        assertNotInfinite(y);
+        assertNotInfinite(z);
     }
 
     /**

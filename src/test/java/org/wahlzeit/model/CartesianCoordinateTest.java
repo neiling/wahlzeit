@@ -55,16 +55,22 @@ public class CartesianCoordinateTest {
         assertTrue(cartesianCoordinate.isEqual(cartesianCoordinate));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsEqualNullObj() {
         final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0.1, 1.1, 2.1);
-        assertFalse(cartesianCoordinate.isEqual(null));
+        cartesianCoordinate.isEqual(null);
     }
 
     @Test
     public void testEqualsNullObj() {
         final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0.1, 1.1, 2.1);
         assertFalse(cartesianCoordinate.equals(null));
+    }
+
+    @Test
+    public void testGetIsEqualsNullObj() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(0.1, 1.1, 2.1);
+        assertFalse(cartesianCoordinate.getIsEqual(null));
     }
 
     @Test
