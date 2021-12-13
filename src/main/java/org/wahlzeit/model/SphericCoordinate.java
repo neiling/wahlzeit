@@ -1,5 +1,7 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.ErrorStrings;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -7,6 +9,10 @@ import java.sql.SQLException;
  * Spheric coordinates to a location.
  */
 public class SphericCoordinate extends AbstractCoordinate {
+
+    private static final String PHI_STRING = "phi";
+    private static final String THETA_STRING = "phi";
+    private static final String RADIUS_STRING = "radius";
 
     private Double phi;
     private Double theta;
@@ -84,13 +90,10 @@ public class SphericCoordinate extends AbstractCoordinate {
 
     @Override
     protected void assertClassInvariants() {
-        assertIsANumber(phi);
-        assertIsANumber(theta);
-        assertIsANumber(radius);
-        assertNotInfinite(phi);
-        assertNotInfinite(theta);
-        assertNotInfinite(radius);
-        assertNonNegative(radius);
+        assertScalar(phi, PHI_STRING);
+        assertScalar(theta, THETA_STRING);
+        assertScalar(radius, RADIUS_STRING);
+        assertNonNegative(radius, RADIUS_STRING);
     }
 
     public Double getPhi() {

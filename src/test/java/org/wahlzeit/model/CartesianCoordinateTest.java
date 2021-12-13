@@ -169,4 +169,49 @@ public class CartesianCoordinateTest {
         assertEquals(0.055746812345190744, cartesianCoordinate.getCentralAngle(sphericCoordinate), 0);
     }
 
+    @Test
+    public void testSetX() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        assertFalse(cartesianCoordinate.isDirty());
+        cartesianCoordinate.setX(2.2);
+        assertEquals(2.2, cartesianCoordinate.getX(), 0);
+        assertTrue(cartesianCoordinate.isDirty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetXasNaN() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        cartesianCoordinate.setX(Double.NaN);
+    }
+
+    @Test
+    public void testSetY() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        assertFalse(cartesianCoordinate.isDirty());
+        cartesianCoordinate.setY(2.2);
+        assertEquals(2.2, cartesianCoordinate.getY(), 0);
+        assertTrue(cartesianCoordinate.isDirty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetYasNaN() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        cartesianCoordinate.setY(Double.NaN);
+    }
+
+    @Test
+    public void testSetZ() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        assertFalse(cartesianCoordinate.isDirty());
+        cartesianCoordinate.setZ(2.2);
+        assertEquals(2.2, cartesianCoordinate.getZ(), 0);
+        assertTrue(cartesianCoordinate.isDirty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetZasNaN() {
+        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
+        cartesianCoordinate.setZ(Double.NaN);
+    }
+
 }

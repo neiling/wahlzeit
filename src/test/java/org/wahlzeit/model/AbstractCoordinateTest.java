@@ -29,7 +29,7 @@ public class AbstractCoordinateTest {
         AbstractCoordinate coordinate = spy(AbstractCoordinate.class);
         when(coordinate.getAsSphericCoordinate()).thenReturn(new SphericCoordinate(1.0, 1.0, 1.0));
         coordinate.asSphericCoordinate();
-        verify(coordinate, times(1)).assertNotNull(any());
+        verify(coordinate, times(1)).assertNotNull(any(), anyString());
         verify(coordinate, times(2)).assertClassInvariants();
     }
 
@@ -38,9 +38,9 @@ public class AbstractCoordinateTest {
         AbstractCoordinate coordinate = spy(AbstractCoordinate.class);
         when(coordinate.getAsCartesianCoordinate()).thenReturn(new CartesianCoordinate(2.0, 1.0, 1.0));
         coordinate.getCartesianDistance(new CartesianCoordinate(1.0, 1.0, 2.0));
-        verify(coordinate, times(2)).assertNotNull(any());
+        verify(coordinate, times(2)).assertNotNull(any(), anyString());
         verify(coordinate, times(4)).assertClassInvariants();
-        verify(coordinate, times(1)).assertNonNegative(anyDouble());
+        verify(coordinate, times(1)).assertNonNegative(anyDouble(), anyString());
     }
 
     @Test
@@ -48,16 +48,16 @@ public class AbstractCoordinateTest {
         AbstractCoordinate coordinate = spy(AbstractCoordinate.class);
         when(coordinate.getAsSphericCoordinate()).thenReturn(new SphericCoordinate(1.0, 1.0, 1.0));
         coordinate.getCentralAngle(new CartesianCoordinate(1.0, 1.0, 2.0));
-        verify(coordinate, times(2)).assertNotNull(any());
+        verify(coordinate, times(2)).assertNotNull(any(), anyString());
         verify(coordinate, times(4)).assertClassInvariants();
-        verify(coordinate, times(1)).assertIsValidCenterAngle(anyDouble());
+        verify(coordinate, times(1)).assertIsValidCenterAngle(anyDouble(), anyString());
     }
 
     @Test
     public void testWriteOnAsserts() throws SQLException {
         AbstractCoordinate coordinate = spy(AbstractCoordinate.class);
         coordinate.writeOn(mock(ResultSet.class));
-        verify(coordinate, times(1)).assertNotNull(any());
+        verify(coordinate, times(1)).assertNotNull(any(), anyString());
         verify(coordinate, times(2)).assertClassInvariants();
     }
 
@@ -70,7 +70,7 @@ public class AbstractCoordinateTest {
     @Test(expected = RuntimeException.class)
     public void testAssertIsValidCenterAngle() {
         AbstractCoordinate coordinate = spy(AbstractCoordinate.class);
-        coordinate.assertIsValidCenterAngle(181);
+        coordinate.assertIsValidCenterAngle(181, anyString());
     }
 
 }

@@ -69,6 +69,16 @@ public class PhotoTest {
         assertEquals(new Location(1.1, 1.2, 1.3), photo.getLocation().get());
     }
 
+    @Test
+    public void testReadFromInvalidCoordinate() throws SQLException {
+        when(rset.getString("owner_email_address")).thenReturn("root@localhost");
+        when(rset.getString("owner_home_page")).thenReturn("http://wahlzeit.org/filter?userName=admin");
+        when(rset.getDouble(eq("coordinate_x"))).thenReturn(Double.NaN);
+        final Photo photo = new Photo(rset);
+        assertTrue(photo.getLocation().isPresent());
+        assertEquals(new Location(0.0, 0.0, 0.0), photo.getLocation().get());
+    }
+
     @Test(expected = NullPointerException.class)
     public void test_writeOn_empty_photo_exp_NullPointer() throws SQLException {
         final Photo photo = new Photo();

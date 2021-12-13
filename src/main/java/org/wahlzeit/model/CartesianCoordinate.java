@@ -9,6 +9,10 @@ import java.util.Objects;
  */
 public class CartesianCoordinate extends AbstractCoordinate {
 
+    private static final String X_STRING = "X";
+    private static final String Y_STRING = "Y";
+    private static final String Z_STRING = "Z";
+
     private final static double EPSILON = 1e-6; // 0.00001d
 
     private Double x;
@@ -115,12 +119,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
     @Override
     protected void assertClassInvariants() {
-        assertIsANumber(x);
-        assertIsANumber(y);
-        assertIsANumber(z);
-        assertNotInfinite(x);
-        assertNotInfinite(y);
-        assertNotInfinite(z);
+        assertScalar(x, X_STRING);
+        assertScalar(y, Y_STRING);
+        assertScalar(z, Z_STRING);
     }
 
     /**
@@ -144,4 +145,21 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return z;
     }
 
+    public void setX(Double x) {
+        assertScalar(x, X_STRING);
+        this.x = x;
+        incWriteCount();
+    }
+
+    public void setY(Double y) {
+        assertScalar(y, Y_STRING);
+        this.y = y;
+        incWriteCount();
+    }
+
+    public void setZ(Double z) {
+        assertScalar(z, Z_STRING);
+        this.z = z;
+        incWriteCount();
+    }
 }

@@ -155,7 +155,14 @@ public class Photo extends DataObject {
 		creationTime = rset.getLong("creation_time");
 
 		maxPhotoSize = PhotoSize.getFromWidthHeight(width, height);
-		location = new Location(rset);
+
+		try {
+			location = new Location(rset);
+		} catch (IllegalArgumentException ex) {
+			SysLog.logSysError("Invalid coordinates in database: " + ex.getMessage() + " Setting coordinates to default value.");
+			location = new Location(0.0, 0.0, 0.0);
+		}
+
 	}
 
 	/**
@@ -177,7 +184,11 @@ public class Photo extends DataObject {
 		rset.updateInt("no_votes", noVotes);
 		rset.updateLong("creation_time", creationTime);
 		if (location != null) {
-			location.writeOn(rset);
+			try {
+				location.writeOn(rset);
+			} catch (IllegalArgumentException | NullPointerException ex) {
+				SysLog.logSysError("Failed to write coordinates in database: " + ex.getMessage());
+			}
 		}
 	}
 

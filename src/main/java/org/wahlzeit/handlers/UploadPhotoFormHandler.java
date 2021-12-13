@@ -47,25 +47,29 @@ public class UploadPhotoFormHandler extends AbstractWebFormHandler {
 		}
 
 		try {
-			PhotoManager pm = PhotoManager.getInstance();
+			BirdPhotoManager pm = BirdPhotoManager.getInstance();
 			String sourceFileName = us.getAsString(args, "fileName");
 			File file = new File(sourceFileName);
-			Photo photo = pm.createPhoto(file);
+			BirdPhoto photo = pm.createPhoto(file);
 
 			String targetFileName = SysConfig.getBackupDir().asString() + photo.getId().asString();
 			createBackup(sourceFileName, targetFileName);
-		
+
 			User user = (User) us.getClient();
-			user.addPhoto(photo); 
-			
+			user.addPhoto(photo);
+
 			photo.setTags(new Tags(tags));
+
+			// Dummy values, should actually come form UI
+			// If setLocation throws an IllegalArgumentException it should be catch below
+			photo.setLocation(new Location(1.0, 2.0, 3.0));
 
 			pm.savePhoto(photo);
 
 			StringBuffer sb = UserLog.createActionEntry("UploadPhoto");
 			UserLog.addCreatedObject(sb, "Photo", photo.getId().asString());
 			UserLog.log(sb);
-			
+
 			us.setTwoLineMessage(us.cfg().getPhotoUploadSucceeded(), us.cfg().getKeepGoing());
 		} catch (Exception ex) {
 			SysLog.logThrowable(ex);
