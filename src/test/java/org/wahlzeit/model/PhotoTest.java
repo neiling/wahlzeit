@@ -44,9 +44,10 @@ public class PhotoTest {
 
         when(rset.getLong("creation_time")).thenReturn(1636193639987L);
 
-        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
-        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
-        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.3);
+        when(rset.getDouble(eq("coordinate_a"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_b"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_c"))).thenReturn(1.3);
+        when(rset.getInt(eq("coordinate_type"))).thenReturn(AbstractCoordinate.CoordinateType.CARTESIAN.ordinal());
         return new Photo(rset);
     }
 
@@ -66,17 +67,17 @@ public class PhotoTest {
         assertEquals(PhotoStatus.getFromInt(8), photo.getStatus());
         assertEquals(1636193639987L, photo.getCreationTime());
         assertTrue(photo.getLocation().isPresent());
-        assertEquals(new Location(1.1, 1.2, 1.3), photo.getLocation().get());
+        assertEquals(new Location(new CartesianCoordinate(1.1, 1.2, 1.3)), photo.getLocation().get());
     }
 
     @Test
     public void testReadFromInvalidCoordinate() throws SQLException {
         when(rset.getString("owner_email_address")).thenReturn("root@localhost");
         when(rset.getString("owner_home_page")).thenReturn("http://wahlzeit.org/filter?userName=admin");
-        when(rset.getDouble(eq("coordinate_x"))).thenReturn(Double.NaN);
+        when(rset.getDouble(eq("coordinate_a"))).thenReturn(Double.NaN);
         final Photo photo = new Photo(rset);
         assertTrue(photo.getLocation().isPresent());
-        assertEquals(new Location(0.0, 0.0, 0.0), photo.getLocation().get());
+        assertEquals(new Location(new CartesianCoordinate(0.0, 0.0, 0.0)), photo.getLocation().get());
     }
 
     @Test(expected = NullPointerException.class)
@@ -88,6 +89,7 @@ public class PhotoTest {
     @Test
     public void testWriteOn() throws SQLException {
         final Photo photo = initPhotoMockFromDB(rset);
+        photo.setLocation(new Location(new CartesianCoordinate(1.1, 1.2, 1.42)));
         photo.writeOn(rset);
         verify(rset, times(1)).updateInt(eq("id"), anyInt());
         verify(rset, times(1)).updateInt(eq("owner_id"), anyInt());
@@ -103,9 +105,10 @@ public class PhotoTest {
         verify(rset, times(1)).updateInt(eq("praise_sum"), anyInt());
         verify(rset, times(1)).updateInt(eq("no_votes"), anyInt());
         verify(rset, times(1)).updateLong(eq("creation_time"), anyLong());
-        verify(rset, times(1)).updateDouble(eq("coordinate_x"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_y"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_z"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_a"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_b"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_c"), anyDouble());
+        verify(rset, times(1)).updateInt(eq("coordinate_type"), eq(AbstractCoordinate.CoordinateType.CARTESIAN.ordinal()));
     }
 
     @Test
@@ -117,10 +120,10 @@ public class PhotoTest {
     @Test
     public void testSetLocation() throws SQLException {
         final Photo photo = initPhotoMockFromDB(rset);
-        photo.setLocation(new Location(0.1, 0.2, 0.3));
+        photo.setLocation(new Location(new CartesianCoordinate(0.1, 0.2, 0.3)));
         assertTrue(photo.getLocation().isPresent());
-        assertEquals(photo.getLocation(), Optional.of(new Location(0.1, 0.2, 0.3)));
-        assertEquals(photo.getLocation().get(), new Location(0.1, 0.2, 0.3));
+        assertEquals(photo.getLocation(), Optional.of(new Location(new CartesianCoordinate(0.1, 0.2, 0.3))));
+        assertEquals(photo.getLocation().get(), new Location(new CartesianCoordinate(0.1, 0.2, 0.3)));
         assertTrue(photo.isDirty());
     }
 

@@ -62,7 +62,7 @@ public class UploadPhotoFormHandler extends AbstractWebFormHandler {
 
 			// Dummy values, should actually come form UI
 			// If setLocation throws an IllegalArgumentException it should be catch below
-			photo.setLocation(new Location(1.0, 2.0, 3.0));
+			photo.setLocation(new Location(CartesianCoordinate.getFromCache(1.0, 2.0, 3.0)));
 
 			pm.savePhoto(photo);
 

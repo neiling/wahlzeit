@@ -15,6 +15,8 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
     public static final String CARTESIAN_COORDINATE_STRING = "CartesianCoordinate object";
     public static final String COORDINATE_STRING = "Coordinate object";
 
+    protected enum CoordinateType {CARTESIAN, SPHERIC};
+
     protected abstract SphericCoordinate getAsSphericCoordinate();
 
     @Override
@@ -108,16 +110,11 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
         return angle;
     }
 
-    protected abstract void doReadFrom(ResultSet rset) throws SQLException;
-
     @Override
     public void readFrom(ResultSet rset) throws SQLException {
-        assertClassInvariants();
-        assertNotNull(rset, ErrorStrings.RSET_SHOULD_NOT_NULL);
-
-        doReadFrom(rset);
-
-        assertClassInvariants();
+        // Due to the immutability of coordinate objects, this method can no longer be used.
+        // A method is needed that has a coordinate object as return value.
+        throw new UnsupportedOperationException("Use the methode getFromResult(...) to create a Coordinate object from database");
     }
 
     protected abstract void doWriteOn(ResultSet rset) throws SQLException;

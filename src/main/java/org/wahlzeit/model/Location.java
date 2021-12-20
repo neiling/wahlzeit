@@ -1,6 +1,8 @@
 package org.wahlzeit.model;
 
 import org.wahlzeit.services.DataObject;
+import org.wahlzeit.model.AbstractCoordinate.CoordinateType;
+import org.wahlzeit.utils.ErrorStrings;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,20 +24,24 @@ public class Location extends DataObject {
      */
     public Location(final Coordinate coordinate) {
         this.coordinate = coordinate;
-    }
-
-    /**
-     * @methodtype constructor
-     */
-    public Location(final double x, final double y, final double z) {
-        this.coordinate = new CartesianCoordinate(x, y, z);
+        // At this point I assume that a new location has been added by the user and should be stored in the database.
+        incWriteCount();
     }
 
     /**
      * @methodtype constructor
      */
     public Location(final ResultSet rset) throws SQLException {
-        this.coordinate = new CartesianCoordinate(rset);
+        switch (CoordinateType.values()[rset.getInt("coordinate_type")]) {
+            case CARTESIAN:
+                this.coordinate = CartesianCoordinate.getFromResultSet(rset);
+                break;
+            case SPHERIC:
+                this.coordinate = SphericCoordinate.getFromResultSet(rset);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown coordinate type from database.");
+        }
     }
 
     /**
@@ -72,15 +78,17 @@ public class Location extends DataObject {
 
     @Override
     public void readFrom(ResultSet rset) throws SQLException {
-        coordinate.readFrom(rset);
-        if (coordinate.isDirty()) {
-            incWriteCount();
-        }
+        throw new UnsupportedOperationException("Use the constructor Location(ResultSet rset) to create a Location object from database");
     }
 
     @Override
     public void writeOn(ResultSet rset) throws SQLException {
-        coordinate.writeOn(rset);
+        // The coordinate data of a Location should only write to the Database if they come from Userinput
+        // This should prevent that by constant alternating conversion of coordinates,
+        // for example Spherical to Cartesian, it comes the rounding errors add up.
+        if (isDirty()) {
+            coordinate.writeOn(rset);
+        }
     }
 
 }

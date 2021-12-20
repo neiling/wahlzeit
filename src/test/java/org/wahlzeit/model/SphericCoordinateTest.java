@@ -20,36 +20,28 @@ public class SphericCoordinateTest {
     private ResultSet rset;
 
     @Test
-    public void testReadFrom() throws SQLException {
-        when(rset.getDouble(eq("coordinate_phi"))).thenReturn(0.9);
-        when(rset.getDouble(eq("coordinate_theta"))).thenReturn(0.8);
-        when(rset.getDouble(eq("coordinate_radius"))).thenReturn(10.0);
-        final SphericCoordinate coordinate = new SphericCoordinate(rset);
+    public void testGetFromResultSet() throws SQLException {
+        when(rset.getDouble(eq("coordinate_a"))).thenReturn(0.9);
+        when(rset.getDouble(eq("coordinate_b"))).thenReturn(0.8);
+        when(rset.getDouble(eq("coordinate_c"))).thenReturn(10.0);
+        final SphericCoordinate coordinate = SphericCoordinate.getFromResultSet(rset);
         assertEquals(coordinate, new SphericCoordinate(0.9, 0.8, 10.0));
     }
 
-    @Test
-    public void testReadFromTwice() throws SQLException {
-        when(rset.getDouble(eq("coordinate_phi"))).thenReturn(0.9);
-        when(rset.getDouble(eq("coordinate_theta"))).thenReturn(0.8);
-        when(rset.getDouble(eq("coordinate_radius"))).thenReturn(10.0);
-        final SphericCoordinate coordinate = new SphericCoordinate(rset);
-        assertFalse(coordinate.isDirty());
-        when(rset.getDouble(eq("coordinate_phi"))).thenReturn(0.9);
-        when(rset.getDouble(eq("coordinate_theta"))).thenReturn(0.9);
-        when(rset.getDouble(eq("coordinate_radius"))).thenReturn(10.0);
+    @Test(expected = UnsupportedOperationException.class)
+    public void testReadFrom() throws SQLException {
+        final SphericCoordinate coordinate = SphericCoordinate.getFromResultSet(rset);
         coordinate.readFrom(rset);
-        assertEquals(coordinate, new SphericCoordinate(0.9, 0.9, 10.0));
-        assertTrue(coordinate.isDirty());
     }
 
     @Test
     public void testWriteOn() throws SQLException {
         final SphericCoordinate coordinate = new SphericCoordinate(0.9, 0.8, 10.0);
         coordinate.writeOn(rset);
-        verify(rset, times(1)).updateDouble(eq("coordinate_phi"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_theta"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_radius"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_a"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_b"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_c"), anyDouble());
+        verify(rset, times(1)).updateInt(eq("coordinate_type"), eq(AbstractCoordinate.CoordinateType.SPHERIC.ordinal()));
     }
 
     @Test(expected = UnsupportedOperationException.class)

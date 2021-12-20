@@ -4,6 +4,9 @@ import org.wahlzeit.utils.ErrorStrings;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Spheric coordinates to a location.
@@ -14,43 +17,42 @@ public class SphericCoordinate extends AbstractCoordinate {
     private static final String THETA_STRING = "phi";
     private static final String RADIUS_STRING = "radius";
 
-    private Double phi;
-    private Double theta;
-    private Double radius;
+    private final Double phi;
+    private final Double theta;
+    private final Double radius;
 
-    public SphericCoordinate(final Double phi, final Double theta, final Double radius) {
+    private static final Map<Integer, SphericCoordinate> coordinateCache = new HashMap<>();
+
+    // The constructor is to be used for testing purposes only. Otherwise, please use getFromCache.
+    SphericCoordinate(final Double phi, final Double theta, final Double radius) {
         this.phi = phi;
         this.theta = theta;
         this.radius = radius;
         assertClassInvariants();
     }
 
-    public SphericCoordinate(final ResultSet rset) throws SQLException {
-        this.phi = 0.0;
-        this.theta = 0.0;
-        this.radius = 0.0;
-        readFrom(rset);
+    public static SphericCoordinate getFromResultSet(final ResultSet rset) throws SQLException {
+        return getFromCache(
+                rset.getDouble("coordinate_a"),
+                rset.getDouble("coordinate_b"),
+                rset.getDouble("coordinate_c")
+        );
     }
 
-    @Override
-    protected void doReadFrom(final ResultSet rset) throws SQLException {
-        if (isCoorInit()) {
-            incWriteCount();
+    public static SphericCoordinate getFromCache(final double a, final double b, final double c) {
+        final int key = Objects.hash(a, b, c);
+        if (!coordinateCache.containsKey(key)) {
+            coordinateCache.put(key, new SphericCoordinate(a, b, c));
         }
-        phi = rset.getDouble("coordinate_phi");
-        theta = rset.getDouble("coordinate_theta");
-        radius = rset.getDouble("coordinate_radius");
-    }
-
-    private boolean isCoorInit() {
-        return !(phi == 0.0 && theta == 0.0 && radius == 0.0);
+        return coordinateCache.get(key);
     }
 
     @Override
     protected void doWriteOn(final ResultSet rset) throws SQLException {
-        rset.updateDouble("coordinate_phi", phi);
-        rset.updateDouble("coordinate_theta", theta);
-        rset.updateDouble("coordinate_radius", radius);
+        rset.updateDouble("coordinate_a", phi);
+        rset.updateDouble("coordinate_b", theta);
+        rset.updateDouble("coordinate_c", radius);
+        rset.updateInt("coordinate_type", CoordinateType.SPHERIC.ordinal());
     }
 
     @Override
@@ -58,7 +60,7 @@ public class SphericCoordinate extends AbstractCoordinate {
         final double x = radius * Math.sin(theta) * Math.cos(phi);
         final double y = radius * Math.sin(theta) * Math.sin(phi);
         final double z = radius * Math.cos(theta);
-        return new CartesianCoordinate(x, y, z);
+        return CartesianCoordinate.getFromCache(x, y, z);
     }
 
     @Override

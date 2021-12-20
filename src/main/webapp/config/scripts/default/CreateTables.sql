@@ -30,12 +30,10 @@ CREATE TABLE photos (
 	praise_sum integer,
 	no_votes integer,
 	creation_time bigint,
-	coordinate_x double precision,
-	coordinate_y double precision,
-	coordinate_z double precision,
-    coordinate_phi double precision,
-    coordinate_theta double precision,
-    coordinate_radius double precision,
+	coordinate_a double precision,
+	coordinate_b double precision,
+	coordinate_c double precision,
+	coordinate_type integer,
 	bird_species text
 );
 

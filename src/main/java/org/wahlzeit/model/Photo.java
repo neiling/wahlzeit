@@ -160,7 +160,7 @@ public class Photo extends DataObject {
 			location = new Location(rset);
 		} catch (IllegalArgumentException ex) {
 			SysLog.logSysError("Invalid coordinates in database: " + ex.getMessage() + " Setting coordinates to default value.");
-			location = new Location(0.0, 0.0, 0.0);
+			location = new Location(CartesianCoordinate.getFromCache(0.0, 0.0, 0.0));
 		}
 
 	}

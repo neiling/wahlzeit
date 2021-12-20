@@ -2,6 +2,8 @@ package org.wahlzeit.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,13 +17,16 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
     private final static double EPSILON = 1e-6; // 0.00001d
 
-    private Double x;
-    private Double y;
-    private Double z;
+    private final Double x;
+    private final Double y;
+    private final Double z;
+
+    private static final Map<Integer, CartesianCoordinate> coordinateCache = new HashMap<>();
 
     /**
      * @methodtype constructor
      */
+    // The constructor is to be used for testing purposes only. Otherwise, please use getFromCache.
     CartesianCoordinate(final double x, final double y, final double z) {
         this.x = x;
         this.y = y;
@@ -29,14 +34,20 @@ public class CartesianCoordinate extends AbstractCoordinate {
         assertClassInvariants();
     }
 
-    /**
-     * @methodtype constructor
-     */
-    CartesianCoordinate(final ResultSet rset) throws SQLException {
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
-        readFrom(rset);
+    public static CartesianCoordinate getFromResultSet(final ResultSet rset) throws SQLException {
+        return getFromCache(
+                rset.getDouble("coordinate_a"),
+                rset.getDouble("coordinate_b"),
+                rset.getDouble("coordinate_c")
+        );
+    }
+
+    public static CartesianCoordinate getFromCache(final double a, final double b, final double c) {
+        final int key = Objects.hash(a, b, c);
+        if (!coordinateCache.containsKey(key)) {
+            coordinateCache.put(key, new CartesianCoordinate(a, b, c));
+        }
+        return coordinateCache.get(key);
     }
 
     public double getDistance(final CartesianCoordinate coor) {
@@ -56,24 +67,11 @@ public class CartesianCoordinate extends AbstractCoordinate {
     }
 
     @Override
-    protected void doReadFrom(final ResultSet rset) throws SQLException {
-        if (isCoorInit()) {
-            incWriteCount();
-        }
-        x = rset.getDouble("coordinate_x");
-        y = rset.getDouble("coordinate_y");
-        z = rset.getDouble("coordinate_z");
-    }
-
-    private boolean isCoorInit() {
-        return !(x == 0.0 && y == 0.0 && z == 0.0);
-    }
-
-    @Override
     protected void doWriteOn(final ResultSet rset) throws SQLException {
-        rset.updateDouble("coordinate_x", x);
-        rset.updateDouble("coordinate_y", y);
-        rset.updateDouble("coordinate_z", z);
+        rset.updateDouble("coordinate_a", x);
+        rset.updateDouble("coordinate_b", y);
+        rset.updateDouble("coordinate_c", z);
+        rset.updateInt("coordinate_type", CoordinateType.CARTESIAN.ordinal());
     }
 
     @Override
@@ -93,14 +91,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
     @Override
     protected SphericCoordinate getAsSphericCoordinate() {
-        final CartesianCoordinate origin = new CartesianCoordinate(0.0,0.0,0.0);
+        final CartesianCoordinate origin = getFromCache(0.0,0.0,0.0);
         final double radius = origin.getDistance(this);
         if (radius == 0) {
-            return new SphericCoordinate(0.0, 0.0, 0.0);
+            return SphericCoordinate.getFromCache(0.0, 0.0, 0.0);
         }
         final double phi = Math.atan2(y, x);
         final double theta = Math.acos(z/radius);
-        return new SphericCoordinate(phi, theta, radius);
+        return SphericCoordinate.getFromCache(phi, theta, radius);
     }
 
     @Override
@@ -112,7 +110,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
             return true;
         }
         final CartesianCoordinate otherCartCoor = otherCoordinate.asCartesianCoordinate();
-        return isDoubleEqual(otherCartCoor.getX(), x)&&
+        return isDoubleEqual(otherCartCoor.getX(), x) &&
                 isDoubleEqual(otherCartCoor.getY(), y) &&
                 isDoubleEqual(otherCartCoor.getZ(), z);
     }
@@ -145,21 +143,4 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return z;
     }
 
-    public void setX(Double x) {
-        assertScalar(x, X_STRING);
-        this.x = x;
-        incWriteCount();
-    }
-
-    public void setY(Double y) {
-        assertScalar(y, Y_STRING);
-        this.y = y;
-        incWriteCount();
-    }
-
-    public void setZ(Double z) {
-        assertScalar(z, Z_STRING);
-        this.z = z;
-        incWriteCount();
-    }
 }

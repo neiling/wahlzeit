@@ -92,36 +92,32 @@ public class CartesianCoordinateTest {
     }
 
     @Test
-    public void testReadFrom() throws SQLException {
-        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
-        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
-        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.3);
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(rset);
+    public void testGetFromResultSet() throws SQLException {
+        when(rset.getDouble(eq("coordinate_a"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_b"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_c"))).thenReturn(1.3);
+        final CartesianCoordinate cartesianCoordinate = CartesianCoordinate.getFromResultSet(rset);
         assertEquals(cartesianCoordinate, new CartesianCoordinate(1.1, 1.2, 1.3));
     }
 
-    @Test
-    public void testReadFromTwice() throws SQLException {
-        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
-        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
-        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.3);
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(rset);
-        assertFalse(cartesianCoordinate.isDirty());
-        when(rset.getDouble(eq("coordinate_x"))).thenReturn(1.1);
-        when(rset.getDouble(eq("coordinate_y"))).thenReturn(1.2);
-        when(rset.getDouble(eq("coordinate_z"))).thenReturn(1.4);
+    @Test(expected = UnsupportedOperationException.class)
+    public void testReadFrom() throws SQLException {
+        when(rset.getDouble(eq("coordinate_a"))).thenReturn(1.1);
+        when(rset.getDouble(eq("coordinate_b"))).thenReturn(1.2);
+        when(rset.getDouble(eq("coordinate_c"))).thenReturn(1.3);
+        final CartesianCoordinate cartesianCoordinate = CartesianCoordinate.getFromResultSet(rset);
+        assertNotNull(cartesianCoordinate);
         cartesianCoordinate.readFrom(rset);
-        assertEquals(cartesianCoordinate, new CartesianCoordinate(1.1, 1.2, 1.4));
-        assertTrue(cartesianCoordinate.isDirty());
     }
 
     @Test
     public void testWriteOn() throws SQLException {
         final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
         cartesianCoordinate.writeOn(rset);
-        verify(rset, times(1)).updateDouble(eq("coordinate_x"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_y"), anyDouble());
-        verify(rset, times(1)).updateDouble(eq("coordinate_z"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_a"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_b"), anyDouble());
+        verify(rset, times(1)).updateDouble(eq("coordinate_c"), anyDouble());
+        verify(rset, times(1)).updateInt(eq("coordinate_type"), eq(AbstractCoordinate.CoordinateType.CARTESIAN.ordinal()));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -167,51 +163,6 @@ public class CartesianCoordinateTest {
         final SphericCoordinate sphericCoordinate =
                 new SphericCoordinate(0.9, 0.9, 1.0);
         assertEquals(0.055746812345190744, cartesianCoordinate.getCentralAngle(sphericCoordinate), 0);
-    }
-
-    @Test
-    public void testSetX() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        assertFalse(cartesianCoordinate.isDirty());
-        cartesianCoordinate.setX(2.2);
-        assertEquals(2.2, cartesianCoordinate.getX(), 0);
-        assertTrue(cartesianCoordinate.isDirty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetXasNaN() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        cartesianCoordinate.setX(Double.NaN);
-    }
-
-    @Test
-    public void testSetY() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        assertFalse(cartesianCoordinate.isDirty());
-        cartesianCoordinate.setY(2.2);
-        assertEquals(2.2, cartesianCoordinate.getY(), 0);
-        assertTrue(cartesianCoordinate.isDirty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetYasNaN() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        cartesianCoordinate.setY(Double.NaN);
-    }
-
-    @Test
-    public void testSetZ() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        assertFalse(cartesianCoordinate.isDirty());
-        cartesianCoordinate.setZ(2.2);
-        assertEquals(2.2, cartesianCoordinate.getZ(), 0);
-        assertTrue(cartesianCoordinate.isDirty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetZasNaN() {
-        final CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(1.1, 1.2, 1.3);
-        cartesianCoordinate.setZ(Double.NaN);
     }
 
 }

@@ -18,7 +18,7 @@ public class AbstractCoordinateTest {
         coordinate.writeOn(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testReadFromRsetNull() throws SQLException {
         CartesianCoordinate coordinate = new CartesianCoordinate(1.0, 1.0, 0.0);
         coordinate.readFrom(null);
