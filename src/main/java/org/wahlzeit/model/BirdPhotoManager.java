@@ -1,11 +1,15 @@
 package org.wahlzeit.model;
 
 import org.wahlzeit.services.SysLog;
+import org.wahlzeit.utils.PatternInstance;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@PatternInstance(
+        patternName = "Singleton", participants = {}
+)
 public class BirdPhotoManager extends PhotoManager {
 
     private static boolean isInitialized = false;

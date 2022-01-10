@@ -4,6 +4,7 @@ import org.wahlzeit.services.DataObject;
 import org.wahlzeit.utils.ErrorStrings;
 import org.wahlzeit.utils.InvalidCentralAngleException;
 import org.wahlzeit.utils.NegativeHashException;
+import org.wahlzeit.utils.PatternInstance;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,6 +83,10 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
         return asCartesianCoordinate().doGetCartesianDistance(otherCoordinate);
     }
 
+    @PatternInstance(
+            patternName = "Template Method",
+            participants = {"Abstract Class", "Concrete Class"}
+    )
     @Override
     public double getCartesianDistance(final Coordinate otherCoordinate) {
         assertClassInvariants();
@@ -98,6 +103,10 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
        return asSphericCoordinate().doGetCentralAngle(otherCoordinate);
     }
 
+    @PatternInstance(
+            patternName = "Template Method",
+            participants = {"Abstract Class", "Concrete Class"}
+    )
     @Override
     public double getCentralAngle(final Coordinate otherCoordinate) {
         assertClassInvariants();

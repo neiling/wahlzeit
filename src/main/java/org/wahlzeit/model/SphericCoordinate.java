@@ -1,6 +1,7 @@
 package org.wahlzeit.model;
 
 import org.wahlzeit.utils.ErrorStrings;
+import org.wahlzeit.utils.PatternInstance;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,10 @@ import java.util.Objects;
 /**
  * Spheric coordinates to a location.
  */
+@PatternInstance(
+        patternName = "Value Object",
+        participants = {}
+)
 public class SphericCoordinate extends AbstractCoordinate {
 
     private static final String PHI_STRING = "phi";
@@ -68,6 +73,10 @@ public class SphericCoordinate extends AbstractCoordinate {
         return this;
     }
 
+    @PatternInstance(
+            patternName = "Template Method",
+            participants = {"Abstract Class", "Concrete Class"}
+    )
     @Override
     protected double doGetCentralAngle(final Coordinate otherCoordinate) {
         final SphericCoordinate otherSpCoor = otherCoordinate.asSphericCoordinate();

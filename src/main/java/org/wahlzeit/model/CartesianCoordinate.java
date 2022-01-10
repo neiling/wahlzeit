@@ -1,5 +1,7 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.PatternInstance;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -9,6 +11,10 @@ import java.util.Objects;
 /**
  * Cartesian coordinates to a location.
  */
+@PatternInstance(
+        patternName = "Value Object",
+        participants = {}
+)
 public class CartesianCoordinate extends AbstractCoordinate {
 
     private static final String X_STRING = "X";
@@ -84,6 +90,10 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return this;
     }
 
+    @PatternInstance(
+            patternName = "Template Method",
+            participants = {"Abstract Class", "Concrete Class"}
+    )
     @Override
     protected double doGetCartesianDistance(final Coordinate otherCoordinate) {
         return getDistance(otherCoordinate.asCartesianCoordinate());

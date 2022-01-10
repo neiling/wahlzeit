@@ -5,12 +5,18 @@
 
 package org.wahlzeit.webparts;
 
+import org.wahlzeit.utils.PatternInstance;
+
 import java.util.*;
 import java.io.*;
 
 /**
  * A WritableList is a list of Writables.
  */
+@PatternInstance(
+		patternName = "Composite",
+		participants = "Composite"
+)
 public class WritableList implements Writable {
 	
 	/**

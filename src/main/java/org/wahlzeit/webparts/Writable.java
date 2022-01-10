@@ -5,11 +5,17 @@
 
 package org.wahlzeit.webparts;
 
+import org.wahlzeit.utils.PatternInstance;
+
 import java.io.*;
 
 /**
  * A Writable can write a representation of itself to a Writer.
  */
+@PatternInstance(
+		patternName = "Composite",
+		participants = "Component"
+)
 public interface Writable {
 	
 	/**
