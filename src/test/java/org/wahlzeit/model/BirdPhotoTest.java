@@ -23,21 +23,22 @@ public class BirdPhotoTest {
         when(rset.getString("owner_email_address")).thenReturn("root@localhost");
         when(rset.getString("owner_home_page")).thenReturn("http://wahlzeit.org/filter?userName=admin");
         when(rset.getString(eq("bird_species"))).thenReturn("Great tit");
+        when(rset.getString(eq("birdtype_name"))).thenReturn("Parus");
         return new BirdPhoto(rset);
     }
 
     @Test
-    public void testSetSpecies() throws SQLException {
+    public void testSetBird() throws SQLException {
         final BirdPhoto birdPhoto = initPhotoMockFromDB(rset);
-        birdPhoto.setSpecies("Great tit");
+        birdPhoto.setBird(new Bird("Great tit", new BirdType("Parus")));
         assertTrue(birdPhoto.isDirty());
-        assertEquals("Great tit", birdPhoto.getSpecies());
+        assertEquals(new Bird("Great tit", new BirdType("Parus")), birdPhoto.getBrid());
     }
 
     @Test
     public void testReadFrom() throws SQLException {
         final BirdPhoto birdPhoto = initPhotoMockFromDB(rset);
-        assertEquals("Great tit", birdPhoto.getSpecies());
+        assertEquals(new Bird("Great tit", new BirdType("Parus")), birdPhoto.getBrid());
     }
 
 
@@ -48,6 +49,7 @@ public class BirdPhotoTest {
         verify(rset, times(1)).updateString(eq("owner_email_address"), anyString());
         verify(rset, times(1)).updateString(eq("owner_home_page"), anyString());
         verify(rset, times(1)).updateString(eq("bird_species"), anyString());
+        verify(rset, times(1)).updateString(eq("birdtype_name"), anyString());
     }
 
 }

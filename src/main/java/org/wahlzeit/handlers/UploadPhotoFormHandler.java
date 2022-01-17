@@ -64,6 +64,9 @@ public class UploadPhotoFormHandler extends AbstractWebFormHandler {
 			// If setLocation throws an IllegalArgumentException it should be catch below
 			photo.setLocation(new Location(CartesianCoordinate.getFromCache(1.0, 2.0, 3.0)));
 
+			// Dummy values, same as above
+			photo.setBird(BirdManager.getInstance().getOrCreateBird("Great tit", "Parus"));
+
 			pm.savePhoto(photo);
 
 			StringBuffer sb = UserLog.createActionEntry("UploadPhoto");

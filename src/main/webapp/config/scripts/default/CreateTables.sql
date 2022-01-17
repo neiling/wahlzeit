@@ -34,7 +34,8 @@ CREATE TABLE photos (
 	coordinate_b double precision,
 	coordinate_c double precision,
 	coordinate_type integer,
-	bird_species text
+	bird_species text,
+    birdtype_name text
 );
 
 CREATE TABLE tags (
