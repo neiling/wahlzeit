@@ -20,7 +20,7 @@ public class BirdManager extends ObjectManager {
 
     public BirdManager() {}
 
-    public static BirdManager getInstance() {
+    public static synchronized BirdManager getInstance() {
         return instance;
     }
 

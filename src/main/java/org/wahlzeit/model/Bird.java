@@ -6,6 +6,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*
+Method calls that create a new Bird object:
+
+1. When the object is created from data from the database:
+
+BirdManager.createObject(ResultSet rset)
+Bird(ResultSet rset)
+Bird.readFrom(ResultSet rset)
+ResultSet.getString("bird_species")
+BirdManager.BirdManager.getInstance().getOrCreateBirdType(ResultSet.getString("birdtype_name"))
+
+2. When the object is created by the user input:
+
+BirdManager.getInstance().getOrCreateBird(<bird_species>, <bird_type>)
+Bird(String species, BirdType birdType)
+ */
 public class Bird extends DataObject {
 
     private String species;
