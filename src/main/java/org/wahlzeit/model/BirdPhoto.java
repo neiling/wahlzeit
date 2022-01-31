@@ -11,6 +11,7 @@ import java.util.Objects;
         participants = {"AbstractProduct"}
 )
 /*
+---- cw11 ----
 Method calls that create a new BirdPhoto object:
 
 1. When the object is created from data from the database:
@@ -34,6 +35,16 @@ BirdPhoto.setTags(Tags tags)
 BirdPhoto.setLocation(Location location)
 BirdPhoto.setBird(Bird bird)
 
+---- cw12 ----
+Client-Service Collaboration:
+BirdPhoto (Client) -> Bird (Service)
+The client (BirdPhoto) binds to service (Bird) class.
+
+The collaboration is responsible for ensuring all domain functionality.
+This includes among others:
+
+- Changing object attributes via setter methods
+- Accessing object attributes via getter methods
  */
 public class BirdPhoto extends Photo {
 

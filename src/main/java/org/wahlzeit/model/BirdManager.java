@@ -12,6 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @PatternInstance(
         patternName = "Singleton", participants = {}
 )
+/*
+---- cw12 ----
+Manager collaboration:
+BirdManager (Manager) -> Bird (Element)
+The manager object (BirdManager) binds to the element (Bird) class.
+
+The Collaboration is responsible for the creation of bridge objects.
+ */
 public class BirdManager extends ObjectManager {
 
     private static final BirdManager instance = new BirdManager();
